@@ -1,0 +1,20 @@
+{include file="IWmenu_admin_menu.htm"}
+<div class="z-admincontainer">
+    <div class="z-adminpageicon">{img modname='core' src='editdelete.gif' set='icons/large' __alt=''}</div>
+    <h2>{gt text="Delete the option"}: {$text}</h2>
+    <form class="z-form" name="delete" id="delete" action="{modurl modname=IWmenu type=admin func=delete}" method="post" enctype="application/x-www-form-urlencoded">
+        <div>
+            <input type="hidden" name="mid" value="{$mid}">
+            <input type="hidden" name="submenusId" value="{$submenusId}">
+            <input type="hidden" name="confirmation" value="true">
+            <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWmenu"}" />
+            <div class="z-formrow">
+                <p>{gt text="Please, confirm that you want to delete the option and all its submenus"}: <strong>{$ref}</strong></p>
+            </div>
+            <div class="z-formrow z-adminformbuttons">
+                {button src='button_ok.gif' set='icons/small' __alt="Confirm deletion?" __title="Confirm deletion?"}
+                <a href="{modurl modname=IWmenu type=admin func=main}">{img modname='core' src='button_cancel.gif' set='icons/small'   __alt="Cancel" __title="Cancel"}</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,22 @@
+{include file="IWmenu_admin_menu.htm"}
+<div class="z-admincontainer">
+    <div class="z-adminpageicon">{img modname='core' src='filenew.gif' set='icons/large' __alt=''}</div>
+    <h2>{gt text="Increase the level of the option"}: {$text}</h2>
+    <form class="z-form" name="uplevel" id="uplevel" action="{modurl modname=IWmenu type=admin func=movelevel}" method="post" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="mid" value="{$mid}" />
+        <input type="hidden" name="confirmation" value="true" />
+        <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWmenu"}" />
+        <div class="z-formrow">
+            <p>{gt text="Choose the level to move the option"}: <strong>{$ref}</strong></p>
+        </div>
+        <select name="upmid">
+            {section loop=$registres name=menus}
+            <option value="{$registres[menus].mid}">{$registres[menus].text}</option>
+            {/section}
+        </select>
+        <div class="z-formrow z-adminformbuttons">
+            {button src='button_ok.gif' set='icons/small' __alt="Confirm" __title="Confirm"}
+            <a href="{modurl modname=IWmenu type=admin func=main}">{img modname='core' src='button_cancel.gif' set='icons/small'   __alt="Cancel the increasing of the level" __title="Cancel the increasing of the level"}</a>
+        </div>
+    </form>
+</div>
