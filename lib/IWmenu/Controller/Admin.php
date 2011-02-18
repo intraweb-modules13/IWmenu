@@ -288,7 +288,13 @@ class IWmenu_Controller_Admin extends Zikula_Controller {
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
-
+        $record = array('icon' => '',
+                        'text' => '',
+                        'url' => '',
+                        'descriu' => '',
+                        'grup' => '',
+                        'target' => '',
+                        'id_parent' => '');
         // A copy is required, so the information is loaded
         if ($mid != null && $mid > 0) {
             $record = ModUtil::apiFunc('IWmenu', 'admin', 'get',
@@ -297,13 +303,6 @@ class IWmenu_Controller_Admin extends Zikula_Controller {
                 return LogUtil::registerError($this->__('Menu option not found'));
             }
         }
-        $record = array('icon' => '',
-                        'text' => '',
-                        'url' => '',
-                        'descriu' => '',
-                        'grup' => '',
-                        'target' => '',
-                        'id_parent' => '');
         switch ($m) {
             case 'n':
                 $accio = $this->__('Add a new option to the menu');

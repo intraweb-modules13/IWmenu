@@ -34,13 +34,14 @@
                 <div class="IWmenu_addgroup"><a href="{modurl modname=IWmenu type=admin func=add_group mid=$item.mid}"><img src="modules/IWmenu/images/addgroup.png" alt="{gt text="Add a group"}">{gt text="Add a group"}</a></div>
             </div>
             <div class="IWmenu_actions">
-                <a href="{modurl modname=IWmenu type=admin func=new mid=$item.mid m=e}" title="{gt text="Edit"}"><img src="modules/IWmenu/images/edit.png" alt="{gt text="Edit"}"></a>
+                <a href="{modurl modname=IWmenu type=admin func=newItem mid=$item.mid m=e}" title="{gt text="Edit"}"><img src="modules/IWmenu/images/edit.png" alt="{gt text="Edit"}"></a>
                 <a href="{modurl modname=IWmenu type=admin func=delete mid=$item.mid}" title="{gt text="Delete"}"><img src="modules/IWmenu/images/delete.png" alt="{gt text="Delete"}"></a>
-                <a href="{modurl modname=IWmenu type=admin func=new mid=$item.mid m=c}" title="{gt text="Copy"}"><img src="modules/IWmenu/images/copy.png" alt="{gt text="Copy"}"></a>
+                <a href="{modurl modname=IWmenu type=admin func=newItem mid=$item.mid m=c}" title="{gt text="Copy"}"><img src="modules/IWmenu/images/copy.png" alt="{gt text="Copy"}"></a>
                 <a href="{modurl modname=IWmenu type=admin func=new_sub mid=$item.mid m=s}" title="{gt text="Submenu"}"><img src="modules/IWmenu/images/submenu.png" alt="{gt text="Submenu"}"></a>
                 <a href="{modurl modname=IWmenu type=admin func=movelevel mid=$item.mid}" title="{gt text="Move level"}"><img src="modules/IWmenu/images/movelevel.png" alt="{gt text="Move level"}"></a>
             </div>
         </div>
+        <div style="clear: both;"></div>
         {/foreach}
     </div>
     {else}

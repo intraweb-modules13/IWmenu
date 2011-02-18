@@ -6,7 +6,7 @@
         {else}
             <li class="leaf">
         {/if}
-        {if $item.icon neq ''}
+        {if isset($item.icon) AND $item.icon neq ''}
             <a href="{$item.url}" {$item.target} class="hasicon" style="background-image: url('{$item.icon}');">
                 {$item.text}
             </a>

@@ -14,7 +14,7 @@ class IWmenu_Api_User extends Zikula_Api {
         }
 
         $uid = is_null(UserUtil::getVar('uid')) ? '-1' : UserUtil::getVar('uid');
-        $id = isset($args[id_parent]) ? $args[id_parent] : 0;
+        $id = isset($args['id_parent']) ? $args['id_parent'] : 0;
 
         $pntable = DBUtil::getTables();
         $c = $pntable['IWmenu_column'];

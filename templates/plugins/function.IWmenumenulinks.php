@@ -13,7 +13,7 @@ function smarty_function_IWmenumenulinks($params, &$smarty)
 		$params['seperator'] = '|';
 	}
 	if (!isset($params['class'])) {
-		$params['class'] = 'pn-menuitem-title';
+		$params['class'] = 'z-menuitem-title';
 	}
 
 	$menumenulinks = "<span class=\"" . $params['class'] . "\">" . $params['start'] . " ";
