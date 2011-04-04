@@ -1,6 +1,6 @@
 <?php
 
-class IWmenu_Controller_User extends Zikula_Controller {
+class IWmenu_Controller_User extends Zikula_AbstractController {
 
     /**
      * Get a file from a server folder even it is out of the public html directory

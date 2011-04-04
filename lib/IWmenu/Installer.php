@@ -1,5 +1,5 @@
 <?php
-class IWmenu_Installer extends Zikula_Installer {
+class IWmenu_Installer extends Zikula_AbstractInstaller {
     /**
      * Initialise the iw_vhmenu module creating module tables and module vars
      * @author Albert Perez Monfort (aperezm@xtec.cat)

@@ -1,6 +1,6 @@
 <?php
 
-class IWmenu_Api_Admin extends Zikula_Api {
+class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
     /**
      * Gets all the items created in the menu

@@ -1,5 +1,5 @@
 <?php
-class IWmenu_Api_User extends Zikula_Api {
+class IWmenu_Api_User extends Zikula_AbstractApi {
     /**
      * Gets from the database all the items in first level menu
      * @author:     Albert Perez Monfort (aperezm@xtec.cat)

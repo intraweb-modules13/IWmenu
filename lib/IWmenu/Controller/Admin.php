@@ -1,6 +1,6 @@
 <?php
 
-class IWmenu_Controller_Admin extends Zikula_Controller {
+class IWmenu_Controller_Admin extends Zikula_AbstractController {
     /**
      * Show the list of menu items created and do access to manage them
      * @author:     Albert Pérez Monfort (aperezm@xtec.cat)
