@@ -1,9 +1,9 @@
 {include file="IWmenu_admin_menu.htm"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='filenew.gif' set='icons/large'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='filenew.png' set='icons/large'}</div>
     <h2>{gt text="Add a new option"}</h2>
     <form  method="post" name="new_menu" id="new_menu" enctype="multipart/form-data">
-        <input type="hidden" name="authid" value="{insert name="generateauthkey" module="IWmenu"}" />
+        <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
         <input type="hidden" name="mid" value="{$mid}">
         <input type="hidden" name="level" value="{$level}">
         <div class="z-formrow">
@@ -53,7 +53,9 @@
             <input type="checkbox" name="active" value="1" />
         </div>
         <div style="text-align: center;">
-            <a onClick="javascript:sendNewItemSub()" title="{gt text="Create the option"}">{img modname='core' src='button_ok.gif' set='icons/small'}</a>{gt text="Create the option"}
+            <a onClick="javascript:sendNewItemSub()" title="{gt text='Create the option'}">
+                {img modname='core' src='button_ok.png' set='icons/small'} {gt text="Create the option"}
+            </a>
         </div>
     </form>
 </div>

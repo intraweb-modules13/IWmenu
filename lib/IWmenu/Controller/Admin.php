@@ -1,6 +1,11 @@
 <?php
 
 class IWmenu_Controller_Admin extends Zikula_AbstractController {
+
+    public function postInitialize() {
+        $this->view->setCaching(false);
+    }
+
     /**
      * Show the list of menu items created and do access to manage them
      * @author:     Albert Pérez Monfort (aperezm@xtec.cat)
@@ -9,13 +14,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
     public function main() {
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Gets the groups information
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
         $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo',
-                array('sv' => $sv));
+                        array('sv' => $sv));
 
         // Get the menu
         $menu = ModUtil::func('IWmenu', 'admin', 'getsubmenu',
@@ -23,12 +28,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                             'grups_info' => $grupsInfo,
                             'level' => 0));
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWmenu', false);
-        $view->assign('menuarray', $menu);
-        $view->assign('image_folder', ModUtil::getVar('IWmenu', 'imagedir'));
-
-        return $view->fetch('IWmenu_admin_main.htm');
+        return $this->view->assign('menuarray', $menu)
+                ->assign('image_folder', ModUtil::getVar('IWmenu', 'imagedir'))
+                ->fetch('IWmenu_admin_main.htm');
     }
 
     /**
@@ -39,7 +41,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
     public function getsubmenu($args) {
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         $MenuData = array();
@@ -129,12 +131,12 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // A copy is required, so the information is loaded
         $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
@@ -142,19 +144,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         // get the intranet groups
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
         $grups = ModUtil::func('IWmain', 'user', 'getAllGroups',
-                array('plus' => $this->__('All'),
-                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
-                    'sv' => $sv));
+                        array('plus' => $this->__('All'),
+                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
+                            'sv' => $sv));
         $grups[] = array('id' => '-1',
             'name' => $this->__('Unregistered'));
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWmenu', false);
-        $view->assign('mid', $mid);
-        $view->assign('registre', $registre);
-        $view->assign('grups', $grups);
-
-        return $view->fetch('IWmenu_admin_add_group.htm');
+        return $this->view->assign('mid', $mid)
+                ->assign('registre', $registre)
+                ->assign('grups', $grups)
+                ->fetch('IWmenu_admin_add_group.htm');
     }
 
     /**
@@ -171,13 +170,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         // Construct the group string
         $groups = $groups_db . '$' . $grup . '$';
@@ -217,20 +214,20 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Gets the item information
         $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
 
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
         $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo',
-                array('sv' => $sv,
-                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
+                        array('sv' => $sv,
+                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
 
         // Ask for confirmation
         if (empty($confirmation)) {
@@ -240,20 +237,17 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             }
             $groups = str_replace('$' . $group . '$', '', $registre['groups']);
             $group = $name_group;
-            // Create output object
-            $view = Zikula_View::getInstance('IWmenu', false);
-            $view->assign('mid', $mid);
-            $view->assign('groups', $groups);
-            $view->assign('text', $registre['text']);
-            $view->assign('group', $group);
-            return $view->fetch('IWmenu_admin_del_group.htm');
+
+            return $this->view->assign('mid', $mid)
+                    ->assign('groups', $groups)
+                    ->assign('text', $registre['text'])
+                    ->assign('group', $group)
+                    ->fetch('IWmenu_admin_del_group.htm');
         }
 
         // user has confirmed the deletion
-        // confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        // Confirm authorisation code
+        $this->checkCsrfToken();
 
         // Modify the groups information in database
         if (ModUtil::apiFunc('IWmenu', 'admin', 'modify_grup',
@@ -286,19 +280,19 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
         $record = array('icon' => '',
-                        'text' => '',
-                        'url' => '',
-                        'descriu' => '',
-                        'grup' => '',
-                        'target' => '',
-                        'id_parent' => '');
+            'text' => '',
+            'url' => '',
+            'descriu' => '',
+            'grup' => '',
+            'target' => '',
+            'id_parent' => '');
         // A copy is required, so the information is loaded
         if ($mid != null && $mid > 0) {
             $record = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                    array('mid' => $mid));
+                            array('mid' => $mid));
             if (!$record) {
                 return LogUtil::registerError($this->__('Menu option not found'));
             }
@@ -339,18 +333,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $writeable = (is_writeable($filesPath)) ? true : false;
         $folder = $folderExists && $writeable;
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWmenu', false);
-        $view->assign('mid', $mid);
-        $view->assign('imagePath', ModUtil::getVar('IWmenu', 'imagedir') . '/' . $record['icon']);
-        $view->assign('m', $m);
-        $view->assign('accio', $accio);
-        $view->assign('folder', $folder);
-        $view->assign('acciosubmit', $acciosubmit);
-        $view->assign('record', $record);
-        $view->assign('iwwebbox', $iwwebbox);
-        $view->assign('grups', $grups);
-        return $view->fetch('IWmenu_admin_new.htm');
+        return $this->view->assign('mid', $mid)
+                ->assign('imagePath', ModUtil::getVar('IWmenu', 'imagedir') . '/' . $record['icon'])
+                ->assign('m', $m)
+                ->assign('accio', $accio)
+                ->assign('folder', $folder)
+                ->assign('acciosubmit', $acciosubmit)
+                ->assign('record', $record)
+                ->assign('iwwebbox', $iwwebbox)
+                ->assign('grups', $grups)
+                ->fetch('IWmenu_admin_new.htm');
     }
 
     /**
@@ -376,13 +368,12 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        // Confirm authorisation code
+        $this->checkCsrfToken();
 
         $groups = ($m != 'c') ? $groups = '$' . $grup . '$' : $grup;
         $iconsFolderPath = ModUtil::getVar('IWmain', 'documentRoot') . '/' . ModUtil::getVar('IWmenu', 'imagedir');
@@ -495,7 +486,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Get a menu item
@@ -525,16 +516,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $writeable = (is_writeable($filesPath)) ? true : false;
         $folder = $folderExists && $writeable;
 
-        // Create output object
-        $view = Zikula_View::getInstance('IWmenu', false);
-        $view->assign('mid', $mid);
-        $view->assign('level', $level);
-        $view->assign('folder', $folder);
-        $view->assign('iwwebbox', $iwwebbox);
-        $view->assign('initImagePath', ModUtil::getVar('IWmenu', 'imagedir'));
-        $view->assign('grups', $grups);
-
-        return $view->fetch('IWmenu_admin_new_sub.htm');
+        return $this->view->assign('mid', $mid)
+                ->assign('level', $level)
+                ->assign('folder', $folder)
+                ->assign('iwwebbox', $iwwebbox)
+                ->assign('initImagePath', ModUtil::getVar('IWmenu', 'imagedir'))
+                ->assign('grups', $grups)
+                ->fetch('IWmenu_admin_new_sub.htm');
     }
 
     /**
@@ -553,7 +541,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         if ($id_parent != 0) {
@@ -589,13 +577,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         // Construct the group string
         $groups = '$' . $grup . '$';
@@ -675,7 +661,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
     public function conf() {
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
         $file = ModUtil::getVar('IWmain', 'documentRoot') . '/' . ModUtil::getVar('IWmenu', 'imagedir');
         $noFolder = (!file_exists($file)) ? true : false;
@@ -684,14 +670,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             'imagedir' => ModUtil::getVar('IWmenu', 'imagedir'));
 
         $multizk = (isset($GLOBALS['PNConfig']['Multisites']['multi']) && $GLOBALS['PNConfig']['Multisites']['multi'] == 1) ? 1 : 0;
-        // Create output object
-        $view = Zikula_View::getInstance('IWmenu', false);
-        $view->assign('multizk', $multizk);
-        $view->assign('noFolder', $noFolder);
-        $view->assign('writeable', $writeable);
-        $view->assign('directoriroot', ModUtil::getVar('IWmain', 'documentRoot'));
-        $view->assign('menu_vars', $menu_vars);
-        return $view->fetch('IWmenu_admin_conf.htm');
+
+        return $this->view->assign('multizk', $multizk)
+                ->assign('noFolder', $noFolder)
+                ->assign('writeable', $writeable)
+                ->assign('directoriroot', ModUtil::getVar('IWmain', 'documentRoot'))
+                ->assign('menu_vars', $menu_vars)
+                ->fetch('IWmenu_admin_conf.htm');
     }
 
     /**
@@ -707,13 +692,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         ModUtil::setVar('IWmenu', 'width', $width);
         ModUtil::setVar('IWmenu', 'imagedir', $imagedir);
@@ -745,7 +728,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         //Cridem la funciï¿œ de l'API de l'usuari que ens retornarï¿œ la inforamciï¿œ del registre demanat
@@ -768,22 +751,19 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             $submenusId_array = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds',
                             array('mid' => $mid));
             $submenusId = implode(",", $submenusId_array);
-            // Create output object
-            $view = Zikula_View::getInstance('IWmenu', false);
-            $view->assign('text', $registre['text']);
-            $view->assign('mid', $mid);
-            $view->assign('submenusId', $submenusId);
-            return $view->fetch('IWmenu_admin_del.htm');
+
+            return $this->view->assign('text', $registre['text'])
+                    ->assign('mid', $mid)
+                    ->assign('submenusId', $submenusId)
+                    ->fetch('IWmenu_admin_del.htm');
         }
 
         // User has confirmed the deletion
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         if (ModUtil::apiFunc('IWmenu', 'admin', 'delete',
-                array('submenusId' => $submenusId))) {
+                        array('submenusId' => $submenusId))) {
             // The deletion has been successful
             LogUtil::registerStatus($this->__('The option and its submenus have been deleted'));
 
@@ -813,7 +793,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // change item order
@@ -860,7 +840,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Get item information
@@ -896,7 +876,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $upmid = FormUtil::getPassedValue('upmid', isset($args['upmid']) ? $args['upmid'] : null, 'POST');
 
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // Get item information
@@ -924,19 +904,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                         'text' => $record['text']);
                 }
             }
-            // Create output object
-            $view = Zikula_View::getInstance('IWmenu', false);
-            $view->assign('registres', $records_array);
-            $view->assign('text', $registre['text']);
-            $view->assign('mid', $mid);
-            return $view->fetch('IWmenu_admin_movelevel.htm');
+
+            return $this->view->assign('registres', $records_array)
+                    ->assign('text', $registre['text'])
+                    ->assign('mid', $mid)
+                    ->fetch('IWmenu_admin_movelevel.htm');
         }
 
         // User has confirmed the action
         // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('IWmenu', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         // Up the item level
         if (ModUtil::apiFunc('IWmenu', 'admin', 'move_level',
@@ -968,13 +945,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $mid = FormUtil::getPassedValue('mid', isset($args['mid']) ? $args['mid'] : null, 'POST');
 
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         $records_array[] = $mid;
 
         $records = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                array('id_parent' => $mid));
+                        array('id_parent' => $mid));
 
         foreach ($records as $record) {
             $submenusId = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds',

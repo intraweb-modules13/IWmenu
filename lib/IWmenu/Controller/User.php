@@ -14,7 +14,7 @@ class IWmenu_Controller_User extends Zikula_AbstractController {
 
         // Security check
         if (!SecurityUtil::checkPermission('IWmenu::', "::", ACCESS_READ)) {
-            return LogUtil::registerError($this->__('Sorry! No authorization to access this module.'), 403);
+            throw new Zikula_Exception_Forbidden();
         }
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
         return ModUtil::func('IWmain', 'user', 'getFile',
