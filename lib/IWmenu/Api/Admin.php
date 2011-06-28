@@ -17,7 +17,8 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
         extract($args);
 
         // Needed arguments.
-        if (isset($id_parent)) $id = $id_parent;
+        if (isset($id_parent))
+            $id = $id_parent;
 
         (!isset($id)) ? $id_parent = 0 : $id_parent = $id;
 
@@ -76,7 +77,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have created a new item.
         ModUtil::callHooks('item', 'create', $item['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Return the id of the newly created item to the calling process
         return $item['mid'];
@@ -117,7 +118,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have created a new item.
         ModUtil::callHooks('item', 'create', $item['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Return the id of the newly created item to the calling process
         return $item['mid'];
@@ -178,7 +179,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
         foreach ($submenusId_array as $mid) {
             //Cridem la funciÃ³ get que retorna les dades
             $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                    array('mid' => $mid));
+                            array('mid' => $mid));
             if (!$item) {
                 return LogUtil::registerError($this->__('No such item found.'));
             }
@@ -190,7 +191,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
             // Let any hooks know that we have deleted an item.
             ModUtil::callHooks('item', 'delete', $mid,
-                    array('module' => 'IWmenu'));
+                            array('module' => 'IWmenu'));
         }
         // Let the calling process know that we have finished successfully
         return true;
@@ -217,7 +218,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         //Cridem la funciÃ³ get que retorna les dades
         $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$item) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
@@ -240,7 +241,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have updated an item.
         ModUtil::callHooks('item', 'update', $items['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Let the calling process know that we have finished successfully
         return true;
@@ -267,7 +268,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         //Cridem la funció get que retorna les dades
         $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$item) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
@@ -285,7 +286,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have updated an item.
         ModUtil::callHooks('item', 'update', $item['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Let the calling process know that we have finished successfully
         return true;
@@ -312,7 +313,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         //Cridem la funciÃ³ get que retorna les dades
         $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$item) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
@@ -330,7 +331,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have updated an item.
         ModUtil::callHooks('item', 'update', $item['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Let the calling process know that we have finished successfully
         return true;
@@ -359,7 +360,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         //Cridem la funciÃ³ get que retorna les dades
         $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $mid));
+                        array('mid' => $mid));
         if (!$item) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
@@ -378,7 +379,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have updated an item.
         ModUtil::callHooks('item', 'update', $mid,
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Let the calling process know that we have finished successfully
         return true;
@@ -403,7 +404,7 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         //Cridem la funció get que retorna les dades
         $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                array('mid' => $args['mid']));
+                        array('mid' => $args['mid']));
         if (!$item) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
@@ -421,9 +422,20 @@ class IWmenu_Api_Admin extends Zikula_AbstractApi {
 
         // Let any hooks know that we have updated an item.
         ModUtil::callHooks('item', 'update', $items['mid'],
-                array('module' => 'IWmenu'));
+                        array('module' => 'IWmenu'));
 
         // Let the calling process know that we have finished successfully
         return true;
     }
+
+    public function getlinks($args) {
+        $links = array();
+        if (SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
+            $links[] = array('url' => ModUtil::url('IWmenu', 'admin', 'newItem', array('m' => 'n')), 'text' => $this->__('Add a new option to the menu'), 'id' => 'iwmenu_newitem', 'class' => 'z-icon-es-new');
+            $links[] = array('url' => ModUtil::url('IWmenu', 'admin', 'main'), 'text' => $this->__('Show the options'), 'id' => 'iwmenu_main', 'class' => 'z-icon-es-view');
+            $links[] = array('url' => ModUtil::url('IWmenu', 'admin', 'conf'), 'text' => $this->__('Configure the module'), 'id' => 'iwmenu_conf', 'class' => 'z-icon-es-config');
+        }
+        return $links;
+    }
+
 }
