@@ -1,5 +1,5 @@
 <?php
-class IWmenu_Block_Top extends Zikula_Block {
+class IWmenu_Block_Top extends Zikula_Controller_AbstractBlock {
     public function init() {
         SecurityUtil::registerPermissionSchema('IWmenu:topblock:', 'Top menu');
     }
