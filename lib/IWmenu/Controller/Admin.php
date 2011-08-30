@@ -19,18 +19,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Gets the groups information
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo',
-                        array('sv' => $sv));
+        $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo', array('sv' => $sv));
 
         // Get the menu
-        $menu = ModUtil::func('IWmenu', 'admin', 'getsubmenu',
-                        array('id_parent' => 0,
-                            'grups_info' => $grupsInfo,
-                            'level' => 0));
+        $menu = ModUtil::func('IWmenu', 'admin', 'getsubmenu', array('id_parent' => 0,
+                    'grups_info' => $grupsInfo,
+                    'level' => 0));
 
         return $this->view->assign('menuarray', $menu)
-                ->assign('image_folder', ModUtil::getVar('IWmenu', 'imagedir'))
-                ->fetch('IWmenu_admin_main.htm');
+                        ->assign('image_folder', ModUtil::getVar('IWmenu', 'imagedir'))
+                        ->fetch('IWmenu_admin_main.htm');
     }
 
     /**
@@ -47,8 +45,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $MenuData = array();
 
         // Get the data of each item
-        $SubMenuData = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                        array('id_parent' => $args['id_parent']));
+        $SubMenuData = ModUtil::apiFunc('IWmenu', 'admin', 'getall', array('id_parent' => $args['id_parent']));
 
         // This provides a way to know if there is another option in the same level, so down arrow must be shown or not
         $iter_number = count($SubMenuData);
@@ -106,10 +103,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                 'iorder' => $option['iorder'],
                 'downarrow' => $downarrow);
             // Add the options
-            $SubmenuData = ModUtil::func('IWmenu', 'admin', 'getsubmenu',
-                            array('id_parent' => $option['mid'],
-                                'grups_info' => $args['grups_info'],
-                                'level' => $args['level'] + 1));
+            $SubmenuData = ModUtil::func('IWmenu', 'admin', 'getsubmenu', array('id_parent' => $option['mid'],
+                        'grups_info' => $args['grups_info'],
+                        'level' => $args['level'] + 1));
             if (!empty($SubmenuData)) { // If the menu has items, save them
                 foreach ($SubmenuData as $item) // This foreach converts an n-dimension array in a 1-dimension array, suitable for the template
                     $MenuData[] = $item;
@@ -135,25 +131,23 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         }
 
         // A copy is required, so the information is loaded
-        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                        array('mid' => $mid));
+        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
 
         // get the intranet groups
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups',
-                        array('plus' => $this->__('All'),
-                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
-                            'sv' => $sv));
+        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups', array('plus' => $this->__('All'),
+                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
+                    'sv' => $sv));
         $grups[] = array('id' => '-1',
             'name' => $this->__('Unregistered'));
 
         return $this->view->assign('mid', $mid)
-                ->assign('registre', $registre)
-                ->assign('grups', $grups)
-                ->fetch('IWmenu_admin_add_group.htm');
+                        ->assign('registre', $registre)
+                        ->assign('grups', $grups)
+                        ->fetch('IWmenu_admin_add_group.htm');
     }
 
     /**
@@ -180,19 +174,17 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $groups = $groups_db . '$' . $grup . '$';
 
         // Modify the groups that have access to the menu item
-        $lid = ModUtil::apiFunc('IWmenu', 'admin', 'modify_grup',
-                        array('mid' => $mid,
-                            'groups' => $groups));
+        $lid = ModUtil::apiFunc('IWmenu', 'admin', 'modify_grup', array('mid' => $mid,
+                    'groups' => $groups));
         if ($lid != false) {
             // A new entry has been created
             LogUtil::registerStatus($this->__('The access to the option has been granted to a group'));
 
             //Reset the users menus for all users
             $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-            ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                            array('module' => 'IWmenu',
-                                'name' => 'userMenu',
-                                'sv' => $sv));
+            ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                'name' => 'userMenu',
+                'sv' => $sv));
         }
 
         //Redirect to admin main page
@@ -218,16 +210,14 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         }
 
         // Gets the item information
-        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                        array('mid' => $mid));
+        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
 
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo',
-                        array('sv' => $sv,
-                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
+        $grupsInfo = ModUtil::func('IWmain', 'user', 'getAllGroupsInfo', array('sv' => $sv,
+                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup')));
 
         // Ask for confirmation
         if (empty($confirmation)) {
@@ -239,10 +229,10 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             $group = $name_group;
 
             return $this->view->assign('mid', $mid)
-                    ->assign('groups', $groups)
-                    ->assign('text', $registre['text'])
-                    ->assign('group', $group)
-                    ->fetch('IWmenu_admin_del_group.htm');
+                            ->assign('groups', $groups)
+                            ->assign('text', $registre['text'])
+                            ->assign('group', $group)
+                            ->fetch('IWmenu_admin_del_group.htm');
         }
 
         // user has confirmed the deletion
@@ -250,18 +240,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $this->checkCsrfToken();
 
         // Modify the groups information in database
-        if (ModUtil::apiFunc('IWmenu', 'admin', 'modify_grup',
-                        array('mid' => $mid,
-                            'groups' => $groups))) {
+        if (ModUtil::apiFunc('IWmenu', 'admin', 'modify_grup', array('mid' => $mid,
+                    'groups' => $groups))) {
             // L'esborrament ha estat un ï¿œxit i ho notifiquem
             LogUtil::registerStatus($this->__('The access of the group to the option has been revoked'));
 
             //Reset the users menus for all users
             $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-            ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                            array('module' => 'IWmenu',
-                                'name' => 'userMenu',
-                                'sv' => $sv));
+            ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                'name' => 'userMenu',
+                'sv' => $sv));
         }
 
         // Redirect user to admin main page
@@ -291,8 +279,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             'id_parent' => '');
         // A copy is required, so the information is loaded
         if ($mid != null && $mid > 0) {
-            $record = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                            array('mid' => $mid));
+            $record = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
             if (!$record) {
                 return LogUtil::registerError($this->__('Menu option not found'));
             }
@@ -318,10 +305,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // get the intranet groups
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups',
-                        array('plus' => $this->__('All'),
-                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
-                            'sv' => $sv));
+        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups', array('plus' => $this->__('All'),
+                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
+                    'sv' => $sv));
         $grups[] = array('id' => '-1',
             'name' => $this->__('Unregistered'));
 
@@ -334,15 +320,15 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $folder = $folderExists && $writeable;
 
         return $this->view->assign('mid', $mid)
-                ->assign('imagePath', ModUtil::getVar('IWmenu', 'imagedir') . '/' . $record['icon'])
-                ->assign('m', $m)
-                ->assign('accio', $accio)
-                ->assign('folder', $folder)
-                ->assign('acciosubmit', $acciosubmit)
-                ->assign('record', $record)
-                ->assign('iwwebbox', $iwwebbox)
-                ->assign('grups', $grups)
-                ->fetch('IWmenu_admin_new.htm');
+                        ->assign('imagePath', ModUtil::getVar('IWmenu', 'imagedir') . '/' . $record['icon'])
+                        ->assign('m', $m)
+                        ->assign('accio', $accio)
+                        ->assign('folder', $folder)
+                        ->assign('acciosubmit', $acciosubmit)
+                        ->assign('record', $record)
+                        ->assign('iwwebbox', $iwwebbox)
+                        ->assign('grups', $grups)
+                        ->fetch('IWmenu_admin_new.htm');
     }
 
     /**
@@ -380,8 +366,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         // Modify a menu item
         if ($m == 'e') {
             // get item from database
-            $record = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                            array('mid' => $mid));
+            $record = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
             if ($deleteIcon == 1) {
                 $file = $iconsFolderPath . '/' . $record['icon'];
                 if (file_exists($file)) {
@@ -389,14 +374,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                 }
                 $iconEdited = '';
             }
-            $lid = ModUtil::apiFunc('IWmenu', 'admin', 'update',
-                            array('mid' => $mid,
-                                'text' => $text,
-                                'descriu' => $descriu,
-                                'active' => $active,
-                                'target' => $target,
-                                'url' => $url,
-                                'icon' => $iconEdited));
+            $lid = ModUtil::apiFunc('IWmenu', 'admin', 'update', array('mid' => $mid,
+                        'text' => $text,
+                        'descriu' => $descriu,
+                        'active' => $active,
+                        'target' => $target,
+                        'url' => $url,
+                        'icon' => $iconEdited));
             if ($lid != false) {
                 $lid = $mid; // copied in case the icon has been edited
                 // A item has been modified
@@ -404,21 +388,19 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
                 //Reset the users menus for all users
                 $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-                ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                                array('module' => 'IWmenu',
-                                    'name' => 'userMenu',
-                                    'sv' => $sv));
+                ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                    'name' => 'userMenu',
+                    'sv' => $sv));
             }
         } else {
-            $lid = ModUtil::apiFunc('IWmenu', 'admin', 'create',
-                            array('text' => $text,
-                                'descriu' => $descriu,
-                                'active' => $active,
-                                'target' => $target,
-                                'url' => $url,
-                                'groups' => $groups,
-                                'id_parent' => $id_parent,
-                                'icon' => ''));
+            $lid = ModUtil::apiFunc('IWmenu', 'admin', 'create', array('text' => $text,
+                        'descriu' => $descriu,
+                        'active' => $active,
+                        'target' => $target,
+                        'url' => $url,
+                        'groups' => $groups,
+                        'id_parent' => $id_parent,
+                        'icon' => ''));
             if ($lid != false) {
                 // A new entry has been created
                 LogUtil::registerStatus($this->__('A new option has been created'));
@@ -440,12 +422,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                     $height = 16;
                     // thumbnail image to $width (max.) x $height (max.)
                     $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-                    $msg = ModUtil::func('IWmain', 'user', 'thumbnail',
-                                    array('sv' => $sv,
-                                        'imgSource' => $destination,
-                                        'imgDest' => $destination,
-                                        'widthImg' => $width,
-                                        'heightImg' => $height));
+                    $msg = ModUtil::func('IWmain', 'user', 'thumbnail', array('sv' => $sv,
+                                'imgSource' => $destination,
+                                'imgDest' => $destination,
+                                'widthImg' => $width,
+                                'heightImg' => $height));
                     if ($msg != '') {
                         LogUtil::registerError($msg);
                         return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
@@ -455,21 +436,18 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                     return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
                 }
                 // change the image name acording with the new name
-                ModUtil::apiFunc('IWmenu', 'admin', 'updateIcon',
-                                array('mid' => $lid,
-                                    'icon' => $fileNewName));
+                ModUtil::apiFunc('IWmenu', 'admin', 'updateIcon', array('mid' => $lid,
+                    'icon' => $fileNewName));
             }
         }
 
         //Reorder the menu items
-        ModUtil::func('IWmenu', 'admin', 'reorder',
-                        array('id_parent' => 0));
+        ModUtil::func('IWmenu', 'admin', 'reorder', array('id_parent' => 0));
         //Reset the users menus for all users
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                        array('module' => 'IWmenu',
-                            'name' => 'userMenu',
-                            'sv' => $sv));
+        ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+            'name' => 'userMenu',
+            'sv' => $sv));
         //Redirect to admin main page
         return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
     }
@@ -488,23 +466,20 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
+        
         // Get a menu item
         if ($mid != null && $mid > 0) {
-            $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                            array('mid' => $mid));
+            $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
             if (!$registre) {
                 return LogUtil::registerError($this->__('Menu option not found'));
             }
-            $level = $registre['level'] + 1;
         }
 
         // get the intranet groups
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups',
-                        array('plus' => $this->__('All'),
-                            'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
-                            'sv' => $sv));
+        $grups = ModUtil::func('IWmain', 'user', 'getAllGroups', array('plus' => $this->__('All'),
+                    'less' => ModUtil::getVar('iw_myrole', 'rolegroup'),
+                    'sv' => $sv));
         $grups[] = array('id' => '-1',
             'name' => $this->__('Unregistered'));
 
@@ -517,12 +492,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $folder = $folderExists && $writeable;
 
         return $this->view->assign('mid', $mid)
-                ->assign('level', $level)
-                ->assign('folder', $folder)
-                ->assign('iwwebbox', $iwwebbox)
-                ->assign('initImagePath', ModUtil::getVar('IWmenu', 'imagedir'))
-                ->assign('grups', $grups)
-                ->fetch('IWmenu_admin_new_sub.htm');
+                        ->assign('folder', $folder)
+                        ->assign('iwwebbox', $iwwebbox)
+                        ->assign('initImagePath', ModUtil::getVar('IWmenu', 'imagedir'))
+                        ->assign('grups', $grups)
+                        ->fetch('IWmenu_admin_new_sub.htm');
     }
 
     /**
@@ -547,11 +521,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         if ($id_parent != 0) {
             ModUtil::setVar('IWmenu', 'arbre', ModUtil::getVar('IWmenu', 'arbre') . $id_parent . '$');
         }
-        $itemsmenu = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                        array('id' => $id_parent));
+        $itemsmenu = ModUtil::apiFunc('IWmenu', 'admin', 'getall', array('id' => $id_parent));
         foreach ($itemsmenu as $itemmenu) {
-            ModUtil::func('IWmenu', 'admin', 'menu_items',
-                            array('id_parent' => $itemmenu['mid']));
+            ModUtil::func('IWmenu', 'admin', 'menu_items', array('id_parent' => $itemmenu['mid']));
         }
 
         return $menuarray;
@@ -587,17 +559,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $groups = '$' . $grup . '$';
 
         // Create a submenu item
-        $lid = ModUtil::apiFunc('IWmenu', 'admin', 'create_sub',
-                        array('mid' => $mid,
-                            'text' => $text,
-                            'descriu' => $descriu,
-                            'active' => $active,
-                            'target' => $target,
-                            'url' => $url,
-                            'groups' => $groups,
-                            'id_parent' => $mid,
-                            'level' => $level,
-                            'icon' => $icon));
+        $lid = ModUtil::apiFunc('IWmenu', 'admin', 'create_sub', array('mid' => $mid,
+                    'text' => $text,
+                    'descriu' => $descriu,
+                    'active' => $active,
+                    'target' => $target,
+                    'url' => $url,
+                    'groups' => $groups,
+                    'id_parent' => $mid,
+                    'level' => $level,
+                    'icon' => $icon));
         if ($lid != false) {
             if ($icon['name'] != '') {
                 $iconsFolderPath = ModUtil::getVar('IWmain', 'documentRoot') . '/' . ModUtil::getVar('IWmenu', 'imagedir');
@@ -615,12 +586,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                     $height = 16;
                     // thumbnail image to $width (max.) x $height (max.)
                     $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-                    $msg = ModUtil::func('IWmain', 'user', 'thumbnail',
-                                    array('sv' => $sv,
-                                        'imgSource' => $destination,
-                                        'imgDest' => $destination,
-                                        'widthImg' => $width,
-                                        'heightImg' => $height));
+                    $msg = ModUtil::func('IWmain', 'user', 'thumbnail', array('sv' => $sv,
+                                'imgSource' => $destination,
+                                'imgDest' => $destination,
+                                'widthImg' => $width,
+                                'heightImg' => $height));
                     if ($msg != '') {
                         LogUtil::registerError($msg);
                         return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
@@ -630,23 +600,20 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
                     return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
                 }
                 // change the image name acording with the new name
-                ModUtil::apiFunc('IWmenu', 'admin', 'updateIcon',
-                                array('mid' => $lid,
-                                    'icon' => $fileNewName));
+                ModUtil::apiFunc('IWmenu', 'admin', 'updateIcon', array('mid' => $lid,
+                    'icon' => $fileNewName));
             }
             // Successfull creation
             LogUtil::registerStatus($this->__('A new option has been created'));
 
             // Reorder the menu items
-            ModUtil::func('IWmenu', 'admin', 'reorder',
-                            array('id_parent' => $mid));
+            ModUtil::func('IWmenu', 'admin', 'reorder', array('id_parent' => $mid));
 
             // Reset the users menus for all users
             $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-            ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                            array('module' => 'IWmenu',
-                                'name' => 'userMenu',
-                                'sv' => $sv));
+            ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                'name' => 'userMenu',
+                'sv' => $sv));
         }
 
         // Redirect to admin main page
@@ -672,11 +639,11 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $multizk = (isset($GLOBALS['PNConfig']['Multisites']['multi']) && $GLOBALS['PNConfig']['Multisites']['multi'] == 1) ? 1 : 0;
 
         return $this->view->assign('multizk', $multizk)
-                ->assign('noFolder', $noFolder)
-                ->assign('writeable', $writeable)
-                ->assign('directoriroot', ModUtil::getVar('IWmain', 'documentRoot'))
-                ->assign('menu_vars', $menu_vars)
-                ->fetch('IWmenu_admin_conf.htm');
+                        ->assign('noFolder', $noFolder)
+                        ->assign('writeable', $writeable)
+                        ->assign('directoriroot', ModUtil::getVar('IWmain', 'documentRoot'))
+                        ->assign('menu_vars', $menu_vars)
+                        ->fetch('IWmenu_admin_conf.htm');
     }
 
     /**
@@ -705,10 +672,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // Reset the users menus for all users
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                        array('module' => 'IWmenu',
-                            'name' => 'userMenu',
-                            'sv' => $sv));
+        ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+            'name' => 'userMenu',
+            'sv' => $sv));
 
         // Redirect to admin config page
         return System::redirect(ModUtil::url('IWmenu', 'admin', 'conf'));
@@ -732,8 +698,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         }
 
         //Cridem la funciï¿œ de l'API de l'usuari que ens retornarï¿œ la inforamciï¿œ del registre demanat
-        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                        array('mid' => $mid));
+        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
@@ -748,31 +713,28 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         // Ask for confirmation
         if (empty($confirmation)) {
             //get all the submenus that have to be deleted
-            $submenusId_array = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds',
-                            array('mid' => $mid));
+            $submenusId_array = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds', array('mid' => $mid));
             $submenusId = implode(",", $submenusId_array);
 
             return $this->view->assign('text', $registre['text'])
-                    ->assign('mid', $mid)
-                    ->assign('submenusId', $submenusId)
-                    ->fetch('IWmenu_admin_del.htm');
+                            ->assign('mid', $mid)
+                            ->assign('submenusId', $submenusId)
+                            ->fetch('IWmenu_admin_del.htm');
         }
 
         // User has confirmed the deletion
         // Confirm authorisation code
         $this->checkCsrfToken();
 
-        if (ModUtil::apiFunc('IWmenu', 'admin', 'delete',
-                        array('submenusId' => $submenusId))) {
+        if (ModUtil::apiFunc('IWmenu', 'admin', 'delete', array('submenusId' => $submenusId))) {
             // The deletion has been successful
             LogUtil::registerStatus($this->__('The option and its submenus have been deleted'));
 
             // Reset the users menus for all users
             $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-            ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                            array('module' => 'IWmenu',
-                                'name' => 'userMenu',
-                                'sv' => $sv));
+            ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                'name' => 'userMenu',
+                'sv' => $sv));
         }
 
         // Redirect user to admin main page
@@ -798,27 +760,23 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         // change item order
         // Get item information
-        $item = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                        array('mid' => $mid));
+        $item = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
         if (!$item) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
 
         $iorder = ($puts == '-1') ? $item['iorder'] + 3 : $item['iorder'] - 3;
-        ModUtil::apiFunc('IWmenu', 'admin', 'put_order',
-                        array('mid' => $mid,
-                            'iorder' => $iorder));
+        ModUtil::apiFunc('IWmenu', 'admin', 'put_order', array('mid' => $mid,
+            'iorder' => $iorder));
 
         // Reorder the items
-        ModUtil::func('IWmenu', 'admin', 'reorder',
-                        array('id_parent' => $id_parent));
+        ModUtil::func('IWmenu', 'admin', 'reorder', array('id_parent' => $id_parent));
 
         // Reset the users menus for all users
         $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-        ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                        array('module' => 'IWmenu',
-                            'name' => 'userMenu',
-                            'sv' => $sv));
+        ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+            'name' => 'userMenu',
+            'sv' => $sv));
 
         // Redirect to admin main page
         return System::redirect(ModUtil::url('IWmenu', 'admin', 'main'));
@@ -844,9 +802,8 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         }
 
         // Get item information
-        $items = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                        array('id_parent' => $id_parent,
-                            'mid' => $mid));
+        $items = ModUtil::apiFunc('IWmenu', 'admin', 'getall', array('id_parent' => $id_parent,
+                    'mid' => $mid));
         if (!$items) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
@@ -854,9 +811,8 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         // Reorder all the items with the values 0 2 4 6 8...
         foreach ($items as $item) {
             $i = $i + 2;
-            ModUtil::apiFunc('IWmenu', 'admin', 'put_order',
-                            array('mid' => $item['mid'],
-                                'iorder' => $i));
+            ModUtil::apiFunc('IWmenu', 'admin', 'put_order', array('mid' => $item['mid'],
+                'iorder' => $i));
         }
 
         //Redirect user to admin main page
@@ -880,8 +836,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         }
 
         // Get item information
-        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get',
-                        array('mid' => $mid));
+        $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
         if (!$registre) {
             return LogUtil::registerError($this->__('Menu option not found'));
         }
@@ -889,11 +844,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         // Ask confirmation to change the level
         if (empty($confirmation)) {
             //Agafem els nemï¿œs que tenen per id_parent el mateix que el registre que es vol pujar
-            $records = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                            array('id_parent' => '-1'));
+            $records = ModUtil::apiFunc('IWmenu', 'admin', 'getall', array('id_parent' => '-1'));
             // get all the submenus from the menu
-            $submenusId = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds',
-                            array('mid' => $mid));
+            $submenusId = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds', array('mid' => $mid));
 
             // add the root in the records array
             $records_array[] = array('mid' => 0,
@@ -906,9 +859,9 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             }
 
             return $this->view->assign('registres', $records_array)
-                    ->assign('text', $registre['text'])
-                    ->assign('mid', $mid)
-                    ->fetch('IWmenu_admin_movelevel.htm');
+                            ->assign('text', $registre['text'])
+                            ->assign('mid', $mid)
+                            ->fetch('IWmenu_admin_movelevel.htm');
         }
 
         // User has confirmed the action
@@ -916,18 +869,16 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         $this->checkCsrfToken();
 
         // Up the item level
-        if (ModUtil::apiFunc('IWmenu', 'admin', 'move_level',
-                        array('mid' => $mid,
-                            'id_parent' => $upmid))) {
+        if (ModUtil::apiFunc('IWmenu', 'admin', 'move_level', array('mid' => $mid,
+                    'id_parent' => $upmid))) {
             // Update successful
             LogUtil::registerStatus($this->__('The option has been moved to the parent level'));
 
             // Reset the users menus for all users
             $sv = ModUtil::func('IWmain', 'user', 'genSecurityValue');
-            ModUtil::func('IWmain', 'user', 'usersVarsDelModule',
-                            array('module' => 'IWmenu',
-                                'name' => 'userMenu',
-                                'sv' => $sv));
+            ModUtil::func('IWmain', 'user', 'usersVarsDelModule', array('module' => 'IWmenu',
+                'name' => 'userMenu',
+                'sv' => $sv));
         }
 
         // Redirect user to admin main page
@@ -950,15 +901,14 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
 
         $records_array[] = $mid;
 
-        $records = ModUtil::apiFunc('IWmenu', 'admin', 'getall',
-                        array('id_parent' => $mid));
+        $records = ModUtil::apiFunc('IWmenu', 'admin', 'getall', array('id_parent' => $mid));
 
         foreach ($records as $record) {
-            $submenusId = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds',
-                            array('mid' => $record['mid']));
+            $submenusId = ModUtil::func('IWmenu', 'admin', 'getsubmenusIds', array('mid' => $record['mid']));
             $records_array = array_merge($records_array, $submenusId);
         }
 
         return $records_array;
     }
+
 }
