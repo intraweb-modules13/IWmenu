@@ -48,7 +48,6 @@ class IWmenu_Api_User extends Zikula_AbstractApi {
                         $isMember = ModUtil::func('IWmain', 'user', 'isMember',
                                 array('uid' => $uid,
                                     'gid' => $gids[0],
-                                    'sgid' => $gids[1],
                                     'sv' => $sv));
                     }
                     if ($isMember || ($gids[0] == '-1' && $uid == '-1')) {

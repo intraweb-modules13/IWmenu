@@ -62,7 +62,7 @@
             <input type="hidden" name="iconEdited" value="{$record.icon}" />
             {if $folder}
             <span>
-                <img src={getbaseurl}{modurl modname=IWmenu type=user func=getFile fileName=$imagePath} alt="" />
+                <img src={$baseurl}{modurl modname='IWmenu' type='user' func='getFile' fileName=$imagePath} alt="" />
                 <input type="checkbox" name="deleteIcon" value="1" />{gt text="Delete icon"}
             </span>
             {else}

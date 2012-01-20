@@ -27,7 +27,7 @@
                 {/if}
                 <div class="IWmenu_icon">
                     {if $item.icon neq ''}
-                    <img src={getbaseurl}{modurl modname=IWmenu type=user func=getFile fileName=$item.imagepath} alt='' />
+                    <img src={$baseurl}{modurl modname=IWmenu type=user func=getFile fileName=$item.imagepath} alt='' />
                     {/if}
                 </div>
                 <div class="IWmenu_main">

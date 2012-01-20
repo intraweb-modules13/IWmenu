@@ -68,14 +68,13 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
             // If the URL is empty, put ---
             ($option['url'] != '') ? $url = $option['url'] : $url = '---';
 
-
             // Get the groups and process them
             $groups = substr($option['groups'], 1, -1);
             $groups = explode('$$', $groups);
             $groups_array = '';
             foreach ($groups as $group) {
                 if ($group != '') {
-                    $name_group = ($group == '0') ? $this->__('All') : $args['grups_info'][$group];
+                    $name_group = ($group == '0' || !isset($args['grups_info'][$group])) ? $this->__('All') : $args['grups_info'][$group];
                     if ($group == '-1')
                         $name_group = $this->__('Unregistered');
                     $groups_array .= '<div><a href="index.php?module=IWmenu&amp;type=admin&amp;func=del_group&amp;group=' . $group . '&amp;mid=' . $option['mid'] . '"><img src="modules/IWmenu/images/delgroup.png" /></a> ';
@@ -466,7 +465,7 @@ class IWmenu_Controller_Admin extends Zikula_AbstractController {
         if (!SecurityUtil::checkPermission('IWmenu::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-        
+
         // Get a menu item
         if ($mid != null && $mid > 0) {
             $registre = ModUtil::apiFunc('IWmenu', 'admin', 'get', array('mid' => $mid));
