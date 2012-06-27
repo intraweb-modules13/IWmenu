@@ -41,6 +41,7 @@ class IWmenu_Api_User extends Zikula_AbstractApi {
         foreach ($items as $item) {
             $groups_vector = explode("$", $item['groups']);
             foreach ($groups_vector as $group) {
+                $isMember = false;
                 if ($group != '') {
                     $gids = explode("|", $group);
                     if ($uid != '-1') {
