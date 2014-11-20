@@ -34,7 +34,7 @@
 	height: auto;
 	width: 200px;
 	position: absolute;
-	z-index: 200;
+	z-index: 10000;
 	
 	border-top: 1px solid #FFFFFF;
 }
